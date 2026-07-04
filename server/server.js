@@ -24,7 +24,7 @@ app.use(compression());
 // CORS - only the configured frontend origin may call this API
 app.use(
   cors({
-    origin: process.env.https://tarun-sahu-house-cleaning.vercel.app,
+    origin: "https://tarun-sahu-house-cleaning.vercel.app",
     credentials: true,
   })
 );
