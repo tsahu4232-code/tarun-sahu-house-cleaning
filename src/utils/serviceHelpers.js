@@ -1,6 +1,11 @@
 import houseCleaning from "../assets/services/Home Cleaning/house-cleaning.jpg";
 
-export const API_BASE_URL = "http://localhost:5000/api";
+// Reads the backend URL from the environment. In production (Vercel/Netlify)
+// set VITE_API_BASE_URL to your deployed backend URL, e.g.
+// https://your-backend.onrender.com/api
+// In local dev, if no .env is set, it falls back to localhost.
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
 export const groupServicesByCategory = (services) => {
   const grouped = services.reduce((categories, service) => {

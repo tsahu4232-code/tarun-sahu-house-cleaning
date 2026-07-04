@@ -1,5 +1,6 @@
 import { useState } from "react";
-import API from "../utils/axiosConfig";
+import axios from "axios";
+import { API_BASE_URL } from "../utils/serviceHelpers";
 
 function GalleryUpload({ onUploaded }) {
   const [title, setTitle] = useState("");
@@ -18,6 +19,7 @@ function GalleryUpload({ onUploaded }) {
 
     reader.onloadend = () => {
       setImage(reader.result);
+      console.log("Image converted");
     };
   };
 
@@ -31,11 +33,15 @@ function GalleryUpload({ onUploaded }) {
 
     try {
       setIsUploading(true);
+      console.log("Uploading...");
 
-      const res = await API.post("/gallery", {
-        title,
-        image,
-      });
+      const res = await axios.post(
+        `${API_BASE_URL}/gallery`,
+        {
+          title,
+          image,
+        }
+      );
 
       console.log(res.data);
 
@@ -71,7 +77,9 @@ function GalleryUpload({ onUploaded }) {
         <input
           type="file"
           accept="image/*"
-          onChange={(e) => convertToBase64(e.target.files[0])}
+          onChange={(e) =>
+            convertToBase64(e.target.files[0])
+          }
           className="w-full"
           required
         />

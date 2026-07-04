@@ -21,10 +21,25 @@ app.use(helmet());
 // less bandwidth
 app.use(compression());
 
-// CORS - only the configured frontend origin may call this API
+// CORS - only the configured frontend origin(s) may call this API.
+// CLIENT_URL can be a single URL or a comma-separated list, e.g.:
+// CLIENT_URL=http://localhost:5173,https://your-frontend.vercel.app
+const allowedOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: "https://tarun-sahu-house-cleaning.vercel.app",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, mobile apps, server-to-server)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`Blocked by CORS: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import API from "../utils/axiosConfig";
+import axios from "axios";
 import StarRating from "./StarRating";
+import { API_BASE_URL } from "../utils/serviceHelpers";
 
 function ReviewForm({ onReviewAdded }) {
   const [formData, setFormData] = useState({
@@ -43,13 +44,12 @@ function ReviewForm({ onReviewAdded }) {
     try {
       setSubmitting(true);
 
-      const res = await API.post("/reviews", formData);
+      const res = await axios.post(
+        `${API_BASE_URL}/reviews`,
+        formData
+      );
 
-      setFormData({
-        name: "",
-        rating: 0,
-        review: "",
-      });
+      setFormData({ name: "", rating: 0, review: "" });
 
       if (onReviewAdded) {
         onReviewAdded(res.data);
@@ -95,9 +95,7 @@ function ReviewForm({ onReviewAdded }) {
         className="w-full border p-3 rounded"
       />
 
-      {error && (
-        <p className="text-red-600 text-sm">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm">{error}</p>}
 
       <button
         type="submit"
