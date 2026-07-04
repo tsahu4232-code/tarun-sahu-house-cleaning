@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { API_BASE_URL, flattenServiceCategories } from "../utils/serviceHelpers";
+import API from "../utils/axiosConfig";
+import { flattenServiceCategories } from "../utils/serviceHelpers";
 import { serviceCategories } from "../data/servicesData";
 
 function BookingForm() {
@@ -8,7 +9,7 @@ function BookingForm() {
     phone: "",
     services: [],
     address: "",
-    date: ""
+    date: "",
   });
 
   const [phoneError, setPhoneError] = useState("");
@@ -19,13 +20,14 @@ function BookingForm() {
     "Sofa Cleaning",
     "Bathroom Cleaning",
     "Water Tank Cleaning",
-    "Carpet Cleaning"
+    "Carpet Cleaning",
   ]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/services`)
-      .then((res) => res.json())
-      .then((services) => {
+    API.get("/services")
+      .then((res) => {
+        const services = res.data;
+
         if (services.length > 0) {
           setServiceList(services.map((service) => service.title));
           return;
@@ -45,17 +47,16 @@ function BookingForm() {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handlePhoneChange = (e) => {
-    // Keep digits only, and never allow more than 10 of them
     const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 10);
 
     setFormData({
       ...formData,
-      phone: digitsOnly
+      phone: digitsOnly,
     });
 
     if (digitsOnly.length === 0) {
@@ -71,12 +72,12 @@ function BookingForm() {
     if (formData.services.includes(service)) {
       setFormData({
         ...formData,
-        services: formData.services.filter((item) => item !== service)
+        services: formData.services.filter((item) => item !== service),
       });
     } else {
       setFormData({
         ...formData,
-        services: [...formData.services, service]
+        services: [...formData.services, service],
       });
     }
   };
@@ -89,13 +90,7 @@ function BookingForm() {
       return;
     }
 
-    await fetch("http://localhost:5000/api/bookings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
+    await API.post("/bookings", formData);
 
     const message =
       `New Booking:%0A` +
@@ -115,13 +110,11 @@ function BookingForm() {
 
   return (
     <div className="bg-white shadow-xl rounded-2xl p-8 max-w-3xl mx-auto">
-
       <h2 className="text-3xl font-bold mb-6 text-center">
         Book Cleaning Service
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
         <input
           type="text"
           name="name"
@@ -146,6 +139,7 @@ function BookingForm() {
             }`}
             required
           />
+
           {phoneError && (
             <p className="text-red-600 text-sm mt-1">{phoneError}</p>
           )}
@@ -155,7 +149,6 @@ function BookingForm() {
           <h3 className="font-bold mb-2">Select Services</h3>
 
           <div className="grid md:grid-cols-2 gap-3">
-
             {serviceList.map((service, index) => (
               <label key={index} className="flex gap-2">
                 <input
@@ -165,7 +158,6 @@ function BookingForm() {
                 {service}
               </label>
             ))}
-
           </div>
         </div>
 
@@ -191,9 +183,7 @@ function BookingForm() {
         >
           Confirm Booking
         </button>
-
       </form>
-
     </div>
   );
 }

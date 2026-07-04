@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../utils/axiosConfig";
 import ReviewCard from "./ReviewCard";
 import StarRating from "./StarRating";
 
@@ -19,7 +19,7 @@ function ReviewsList({ newReview }) {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/reviews");
+      const res = await API.get("/reviews");
       setReviews(res.data);
     } catch (err) {
       console.error("Failed to load reviews", err);
@@ -29,7 +29,11 @@ function ReviewsList({ newReview }) {
   };
 
   if (loading) {
-    return <p className="text-center mt-10 text-gray-500">Loading reviews...</p>;
+    return (
+      <p className="text-center mt-10 text-gray-500">
+        Loading reviews...
+      </p>
+    );
   }
 
   if (reviews.length === 0) {
@@ -46,10 +50,15 @@ function ReviewsList({ newReview }) {
   return (
     <div className="mt-10">
       <div className="flex flex-col items-center mb-8">
-        <div className="text-3xl font-bold">{averageRating.toFixed(1)} / 5</div>
+        <div className="text-3xl font-bold">
+          {averageRating.toFixed(1)} / 5
+        </div>
+
         <StarRating rating={Math.round(averageRating)} />
+
         <p className="text-gray-500 text-sm mt-1">
-          Based on {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+          Based on {reviews.length} review
+          {reviews.length !== 1 ? "s" : ""}
         </p>
       </div>
 

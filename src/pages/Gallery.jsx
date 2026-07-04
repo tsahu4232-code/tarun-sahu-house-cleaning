@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../utils/axiosConfig";
 import Seo from "../components/Seo";
 import { API_BASE_URL } from "../utils/serviceHelpers";
 

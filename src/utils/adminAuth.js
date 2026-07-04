@@ -1,8 +1,7 @@
-import axios from "axios";
-import { API_BASE_URL } from "./serviceHelpers";
+import API from "../utils/axiosConfig";
 
 export const adminLogin = async (email, password) => {
-  const res = await axios.post(`${API_BASE_URL}/auth/admin-login`, {
+  const res = await API.post("/auth/admin-login", {
     email,
     password,
   });

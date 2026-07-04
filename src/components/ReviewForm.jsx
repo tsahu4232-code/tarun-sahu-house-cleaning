@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../utils/axiosConfig";
 import StarRating from "./StarRating";
 
 function ReviewForm({ onReviewAdded }) {
@@ -43,12 +43,13 @@ function ReviewForm({ onReviewAdded }) {
     try {
       setSubmitting(true);
 
-      const res = await axios.post(
-        "http://localhost:5000/api/reviews",
-        formData
-      );
+      const res = await API.post("/reviews", formData);
 
-      setFormData({ name: "", rating: 0, review: "" });
+      setFormData({
+        name: "",
+        rating: 0,
+        review: "",
+      });
 
       if (onReviewAdded) {
         onReviewAdded(res.data);
@@ -94,7 +95,9 @@ function ReviewForm({ onReviewAdded }) {
         className="w-full border p-3 rounded"
       />
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && (
+        <p className="text-red-600 text-sm">{error}</p>
+      )}
 
       <button
         type="submit"

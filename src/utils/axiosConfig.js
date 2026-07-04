@@ -1,9 +1,11 @@
 import axios from "axios";
 
-// Attaches the admin token (if present) to every outgoing axios
-// request. This lets existing components keep using plain `axios`
-// without having to manually add the Authorization header everywhere.
-axios.interceptors.request.use((config) => {
+const API = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
+// हर request में token attach होगा
+API.interceptors.request.use((config) => {
   const token = localStorage.getItem("adminToken");
 
   if (token) {
@@ -13,9 +15,8 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-// If the token is missing/expired, the backend replies 401.
-// Clear the stale token so the admin gets sent back to the login page.
-axios.interceptors.response.use(
+// अगर token expire हो जाए
+API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
@@ -24,3 +25,5 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default API;
