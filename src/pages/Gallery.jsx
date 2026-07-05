@@ -42,7 +42,7 @@ function Gallery() {
               className="bg-white rounded-xl shadow overflow-hidden"
             >
               <img
-                src={img.image}
+                src={img.imageUrl}
                 alt={img.title}
                 loading="lazy"
                 className="w-full h-64 object-cover"
