@@ -1,6 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../utils/serviceHelpers";
+import API from "../utils/axiosConfig";
 
 function GalleryUpload({ onUploaded }) {
   const [title, setTitle] = useState("");
@@ -34,12 +33,10 @@ function GalleryUpload({ onUploaded }) {
     try {
       setIsUploading(true);
       console.log("Uploading...");
-
-      const res = await axios.post(
-        `${API_BASE_URL}/gallery`,
-        {
-          title,
-          image,
+      
+      const res = await API.post("/gallery", {
+        title,
+        image,
         }
       );
 
